@@ -32,6 +32,11 @@ class Server {
         // When connection closes
         connection.on('end', () => console.log("Connection Closed @", connection.address()))
 
+        // Error handling when socket is closed
+        connection.on('error', (err) => {
+            console.log(`There was an error that resulted in the socket @ ${connection.address()} to close.`)
+        })
+
         // Parse incoming message
         connection.on('data', this.displayMessage)
 
