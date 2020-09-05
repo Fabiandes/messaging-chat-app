@@ -4,43 +4,42 @@ const net = require('net')
 // Import the User Object
 const User = require('./user')
 
+//Import Bicker
+const Bicker = require('../bicker/index')
+
 class Server {
     constructor(motd = "Welcome to the server!") {
         // Create set to store all users for broadcasting and logging
-        this.users = new Set()
+        //this.users = new Set()
+        this.bicker = new Bicker()
+
+        this.motd = motd
 
         // Create server instance
-        this.server = net.createServer((connection) => {
-            console.log("New Connection Established @", connection.address)
-
-            // When connection closes
-            connection.on('end', () => console.log("Connection Closed @", connection.address))
-
-            // Parse incoming message
-            connection.on('data', this.parseMessage(data))
-
-            // Send MOTD to client
-            this.sendMessage(motd)
-        })
+        this.server = net.createServer(this.handleNewConnection)
     }
 
-    sendMessage(msg) {
-        connection.write(msg, (err) => {
-            if (err) {
-                console.error("Error sending message to client.")
-                console.log(err)
-            } else {
-                console.log("MOTD sent to client.")
-            }
-        })
+    displayMessage = (data) =>{
+        const msg = this.bicker.parseMessage(data)
+        if(msg.header === "message"){
+            console.log("Client:", msg.body)
+        }
     }
 
-    parseMessage(msg) {
-        console.log("Message recieved")
-        console.log(msg.toString())
+    handleNewConnection = (connection) => {
+        console.log("New Connection Established @", connection.address())
+
+        // When connection closes
+        connection.on('end', () => console.log("Connection Closed @", connection.address()))
+
+        // Parse incoming message
+        connection.on('data', this.displayMessage)
+
+        // Send MOTD to client
+        this.bicker.sendMessage(this.motd, connection)
     }
 
-    listen(port) {
+    listen = (port) => {
         this.server.listen(port, () => {
             console.log('Server running on', this.server.address());
         });

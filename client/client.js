@@ -1,33 +1,29 @@
 const net = require('net')
 const readline = require('readline')
 
+const Bicker = require('../bicker/index')
+
 class Client{
     constructor(port){
         //Get the port that the server is listening on.
         this.port = port
 
+        //Set up Bicker
+        this.bicker = new Bicker()
+
         //Connect to server
-        console.log("Connection to server on port ", this.port)
         this.client = net.createConnection({port: this.port}, ()=>{
             console.log("Connection Successfully Established.")
         })
 
-        this.client.on('data',(data)=>{
-            const msg = data.toString()
-            console.log("Message recieved from server.")
-            console.log(`Server: `, msg)
-        })
+        this.client.on('data', this.displayMessage)
     }
 
-    sendMessage(msg){
-        this.client.write(msg,(err)=>{
-            if(err){
-                console.error("Error sending message")
-                console.log(err)
-            }else{
-                console.log("Message successfully sent to server")
-            }
-        })
+    displayMessage = (data) => {
+        const msg = this.bicker.parseMessage(data)
+        if(msg.header == "message"){
+            console.log("Server:", msg.body)
+        }
     }
 }
 
