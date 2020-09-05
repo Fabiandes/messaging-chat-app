@@ -1,5 +1,4 @@
-const server = require('./index')
+const Server = require('./server')
 
-server.listen(() => {
-    console.log('Server running on', server.address());
-});
+const server = new Server()
+server.listen(7000)

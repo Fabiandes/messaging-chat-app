@@ -13,8 +13,20 @@ class Client{
         })
 
         this.client.on('data',(data)=>{
+            const msg = data.toString()
             console.log("Message recieved from server.")
-            console.log(`Server: ${data}`)
+            console.log(`Server: `, msg)
+        })
+    }
+
+    sendMessage(msg){
+        this.client.write(msg,(err)=>{
+            if(err){
+                console.error("Error sending message")
+                console.log(err)
+            }else{
+                console.log("Message successfully sent to server")
+            }
         })
     }
 }

@@ -16,4 +16,5 @@ const getServerPort = new Promise((resolve, reject)=>{
 getServerPort
 .then((port)=>{
     const client = new Client(port);
+    client.sendMessage("Hello from client")
 })
