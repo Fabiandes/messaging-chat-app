@@ -1,7 +1,7 @@
 class BickerClient {
-  sendMessage(msg, connection) {
+  sendMessage(msg, connection, headerType="message") {
     const header = Buffer.alloc(20);
-    header.write("message", 0, "utf-8");
+    header.write(headerType, 0, "utf-8");
     const body = Buffer.from(msg);
     const data = Buffer.concat([header, body]);
 
@@ -10,7 +10,7 @@ class BickerClient {
         console.error("Error sending message");
         console.log(err);
       } else {
-        console.log("Message successfully sent.");
+        console.log(`${headerType} successfully sent.`);
       }
     });
   }
